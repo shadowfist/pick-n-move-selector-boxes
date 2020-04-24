@@ -25,7 +25,7 @@
     function handleMoveItemsClick(e) {
         // Use the 'data-nth-select-pair' attribute to build the id of
         // the pair of selector boxes to manipulate, if there are more
-        // than one pair of select boxes to move items between -
+        // than one pair of select boxes -
 
         /*
             let nthSelectPair = $(this).get(0).dataset.nthSelectPair');
