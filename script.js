@@ -6,21 +6,32 @@
     function buildSelectOptions(options) {
         let output = "";
         for (let i = 0; i < options.length; i++) {
-            output += `<option value="${i}">${options[i]}</option>`;
+            output += `<option value="${(i + 1)}">${options[i]}</option>`;
         }
         return output;
     }
 
-    let ecNameList = document.getElementById("left-name-list-1");
-
-    ecNameList.innerHTML = buildSelectOptions(data);
+    let nameList = $("#left-name-list-1");
+    nameList.html(buildSelectOptions(data));
 
     /*******************************************************/
 
-    let errorMessage1 = document.querySelector(".error-message-1");
-    errorMessage1.innerHTML =
-        `Pick the values you want from the
-        left and move them to the right.`;
+    let errorMessage1 = $(".error-message-1");
+    errorMessage1.text(`Pick the values you want from the
+    left and move them to the right.`);
+
+    function handleSubmitClick(e) {
+        let valuesToSubmit = $("#selected-values-1").val();
+        (valuesToSubmit) ? alert(`Submitting values - ${valuesToSubmit}`) : e.preventDefault();
+    }
+
+    function handleResetClick(e) {
+        nameList.html(buildSelectOptions(data));
+        let nameListOnRight = $("#right-name-list-1").get(0).options;
+        $(nameListOnRight).remove();
+        $("#selected-values-1").val('');
+        e.preventDefault();
+    }
 
     function handleMoveItemsClick(e) {
         // Use the 'data-nth-select-pair' attribute to build the id of
@@ -37,25 +48,25 @@
         let nameListOnLeft = $("#left-name-list-1");
         let nameListOnRight = $("#right-name-list-1");
         let outputDataField = $("#selected-values-1");
-        let moveDirection = $(this).get(0).dataset.moveDirecton;
+        let moveDirection = $(this).data("moveDirection");
         if (moveDirection === "right") {
             moveItems(nameListOnLeft, nameListOnRight);
         } else if (moveDirection === "left") {
             moveItems(nameListOnRight, nameListOnLeft);
         }
-        updateDataFields(nameListOnRight, outputDataField);
+        updateDataFields(outputDataField, nameListOnRight);
         e.preventDefault();
     }
 
-    function moveItems(moveFrom, moveTo, moveDirection) {
+    function moveItems(moveFrom, moveTo) {
         let itemsToMove = moveFrom.get(0).selectedOptions;
         if (itemsToMove.length > 0) {
             //Move options to designated select box
             moveTo.append($(itemsToMove).clone());
             $(itemsToMove).remove();
-            errorMessage1.style.display = "none";
+            errorMessage1.css("display", "none");
         } else {
-            errorMessage1.style.display = "block";
+            errorMessage1.css("display", "block");
         }
     }
 
@@ -68,5 +79,7 @@
     }
 
     $(".move-item-btns button").click(handleMoveItemsClick);
+    $('button[type="submit"].btn.btn-primary').click(handleSubmitClick);
+    $('button[type="reset"].btn.btn-secondary').click(handleResetClick);
 
 })();
